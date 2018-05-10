@@ -1,0 +1,8 @@
+
+Things to do : 
+    1. Create separate files for routes
+    2. Use put instead of post in update
+    3. Error handling
+    4. Front end checks
+    5. Make is DRY
+    6. UI

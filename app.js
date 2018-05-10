@@ -2,6 +2,7 @@ var express    = require('express');
 var bodyParser = require('body-parser');
 var mongu      = require('mongoose'); 
 var app        = express();
+var comments   = require("./models/comments");
 var campModel  = require("./models/campModel");
 mongu.connect("mongodb://localhost/yelpcampDB");
 
@@ -42,7 +43,7 @@ app.get('/campgrounds',function(req,res){
             console.log("Error finding the data");
         }
         else{
-            res.render("campgrounds.ejs",{campgrounds : camps});
+            res.render("campgrounds/campgrounds.ejs",{campgrounds : camps});
         }    
     })
     
@@ -66,8 +67,63 @@ app.post('/campgrounds',(req,res)=>{
 });
 
 app.get("/campgrounds/addcamp",(req,res)=>{
-    res.render("addcamp.ejs");
+    res.render("campgrounds/addcamp.ejs");
 });
+
+//show route
+app.get("/campgrounds/:id",(req,res)=>{
+    campModel.findById(req.params.id).populate("comments").exec((err,foundCamp)=>{
+        if(err){
+            console.log("Some error in finding the campground corresponding to the given id "+err);
+        }
+        else{
+            console.log("Found camp for the show route!! Let's show'em something");
+            //console.log(foundCamp.comments);
+            res.render("campgrounds/show",{camp:foundCamp});
+        }
+    })
+});
+/////////////////////////////
+////////COMMENTS/////////////
+/////////////////////////////
+
+// Create Route
+app.get("/campgrounds/:id/comments/new",(req,res)=>{
+    campModel.findById(req.params.id,(err,camp)=>{
+        if(err){
+            console.log("Some Error");
+        }
+        else{
+            res.render("comments/new",{camp : camp});
+        }
+    })
+    
+});
+
+// create
+app.post("/campgrounds/:id/comments",(req,res)=>{
+    campModel.findById(req.params.id,(err,foundCamp)=>{
+        if(err){
+            console.log("Some error :( "+err);
+        }
+        else{
+            console.log(req.body.comment);
+            // create comment
+            comments.create(req.body.comment,(err,addedComment)=>{
+                if(err){
+                    console.log("Error :( "+err);
+                }
+                else{
+
+                    console.log("comment added"+addedComment);
+                    foundCamp.comments.push(addedComment);
+                    foundCamp.save();
+                    res.redirect("/campgrounds/"+foundCamp._id);
+                }
+            })
+        }
+    })
+})
 
 app.listen(port,ip,()=>{
     console.log("Server started at port "+port+" and ip "+ip);

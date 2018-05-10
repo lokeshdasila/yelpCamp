@@ -5,6 +5,13 @@ var campModel = require("./models/campModel.js");
 var commentModel = require("./models/comments.js");
 
 mongu.connect("mongodb://localhost/yelpcampDB");
+
+commentModel.remove({},(err)=>{
+    if(err)
+    console.log("Not added");
+    else
+            console.log("removed comments");
+})
 var defaultData = [
     {
         name        : "Some Mountain Camp",
@@ -47,12 +54,11 @@ var someComments = [
     }
 ]
 
-campModel.remove({},(err)=>{
+ campModel.remove({},(err)=>{
     if(err)
         console.log(err);
-    else{
-        
-        console.log("Removed data sucessfully");
+    else{ 
+        console.log("Camp removed");   
         var campCount=0;
         defaultData.forEach((item)=>{
             campModel.create(item,(err,addedCamp)=>{
@@ -66,19 +72,22 @@ campModel.remove({},(err)=>{
                             console.log("Some Error"+err);
                         }
                         else{
-                            console.log("Comment addded to database "+addedComment);
+                            console.log("campCount "+JSON.stringify(someComments[campCount]));
+                            //console.log("Comment addded to database "+addedComment);
                             addedCamp.comments.push(addedComment);
-                            addedCamp.save((err,addedSave)=>{
+                            addedCamp.save( (err,addedSave)=>{
                                 if(err){
                                     console.log("Some error on saving");
                                 }
-                                else
+                                else{
                                     console.log("Saved");
+                                    
+                                }
+                                    
                             })
                         }
                         campCount++;
-                    })
-                    
+                    })          
                 }
                 
             })  
@@ -86,3 +95,16 @@ campModel.remove({},(err)=>{
     }
     //mongu.disconnect();
 })
+
+
+
+
+/*
+
+    nd.remove({},(err)=>{
+        thdujflip;
+    });
+
+    nd.remove({},)
+
+*/

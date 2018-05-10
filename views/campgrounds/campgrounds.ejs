@@ -1,4 +1,4 @@
-<% include partials/header %>
+<% include ../partials/header %>
 <div class="container">
 
     <header class="jumbotron">
@@ -16,13 +16,15 @@
                 <!-- <div class="col-md-6 col-sm-3">
                     <div class="img-thumbnail img-responsive"> -->
                 <div class="card showCampCard">
-                        <img class="card-img-top campImage" alt="Some Image...:(" src="<%= campground.imageURL %>">
+                        <img class="card-img-top campImage img-fluid" alt="Some Image...:(" src="<%= campground.imageURL %>">
                         <% console.log(campground.imageURL)%>
                         <div class="card-body">
                             <h4><%= campground.name %></h4>
                         </div>
                     <!-- </div> -->
-                    
+                        <div>
+                            <a class="btn btn-primary" href="/campgrounds/<%= campground._id %>">More Info</a>
+                        </div>
                 </div>
             <% }) %>        
     </div>
@@ -30,4 +32,4 @@
     <br>
 </div>
 
-<% include partials/footer %>
+<% include ../partials/footer %>
